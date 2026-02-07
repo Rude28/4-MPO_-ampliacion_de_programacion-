@@ -1,11 +1,10 @@
 package Controller;
-
+import java.util.ArrayList;
 import Model.CuadradoMagico;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.net.Socket;
 
 @Data
 @AllArgsConstructor
@@ -14,29 +13,38 @@ public class CuadradoMagicoController {
     private CuadradoMagico cuadradoMagico;
 
     public void crearCuadrado(CuadradoMagico cuadradoMagico) {
-
         System.out.println("Empezamos a crear el cuadrado");
-        int [][]cuadrado=cuadradoMagico.getCuadrado().clone();
+        int [][]cuadrado=cuadradoMagico.getCuadrado();
         int distancia=cuadrado.length;
         int constanteMagica = (distancia * (distancia * distancia + 1)) / 2;
-        int maximo = distancia * 2;
-        int numero = 0;
+        int maximo = distancia * distancia;
         int intentos = 0;
         boolean correcto = false;
-        while(!correcto) {
+        while (!correcto) {
             for (int i = 0; i < distancia; i++) {
                 for (int j = 0; j < distancia; j++) {
-                    numero = (int) (Math.random() * maximo + 1);
-                    cuadradoMagico.getCuadrado();
-                    cuadrado[i][j] = numero;// aqui me va a generar numeros
+                    cuadrado[i][j] = 0;
                 }
             }
-        intentos++;
-        if (comprobarCuadrado(cuadrado)){
-            correcto=true;
+            ArrayList<Integer> numeros = new ArrayList<>();
+            for (int i = 0; i < maximo; i++) {
+                int numero;
+                do {
+                    numero = (int) (Math.random() * maximo) + 1;
+                } while (numeros.contains(numero));
+                numeros.add(numero);
+            }
+            int indice = 0;
+            for (int i = 0; i < distancia; i++) {
+                for (int j = 0; j < distancia; j++) {
+                    cuadrado[i][j] = numeros.get(indice++);
+                }
+            }
+            intentos++;
+            if (comprobarCuadrado(cuadrado)) {
+                correcto = true;
+            }
         }
-        }
-
         imprimirCuadrado(cuadrado,intentos,constanteMagica);
     }
     private boolean comprobarCuadrado (int[][]cuadrado) {
